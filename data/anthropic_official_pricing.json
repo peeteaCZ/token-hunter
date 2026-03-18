@@ -1,0 +1,11 @@
+{
+  "captured_at": "2026-03-18T00:00:00",
+  "parser_version": "anthropic-pricing-snapshot-v1",
+  "items": [
+    {"provider_id": "anthropic", "model_name": "Claude 3 Haiku", "input_price": 0.25, "output_price": 1.25, "url": "https://www.anthropic.com/pricing", "title": "Anthropic API Pricing", "excerpt": "Claude 3 Haiku pricing from Anthropic official pricing."},
+    {"provider_id": "anthropic", "model_name": "Claude 3.5 Haiku", "input_price": 0.8, "output_price": 4.0, "url": "https://www.anthropic.com/pricing", "title": "Anthropic API Pricing", "excerpt": "Claude 3.5 Haiku pricing from Anthropic official pricing."},
+    {"provider_id": "anthropic", "model_name": "Claude 3.7 Sonnet", "input_price": 3.0, "output_price": 15.0, "url": "https://www.anthropic.com/pricing", "title": "Anthropic API Pricing", "excerpt": "Claude 3.7 Sonnet pricing from Anthropic official pricing."},
+    {"provider_id": "anthropic", "model_name": "Claude Sonnet 4", "input_price": 3.0, "output_price": 15.0, "url": "https://www.anthropic.com/pricing", "title": "Anthropic API Pricing", "excerpt": "Claude Sonnet 4 pricing from Anthropic official pricing."},
+    {"provider_id": "anthropic", "model_name": "Claude Opus 4", "input_price": 15.0, "output_price": 75.0, "url": "https://www.anthropic.com/pricing", "title": "Anthropic API Pricing", "excerpt": "Claude Opus 4 pricing from Anthropic official pricing."}
+  ]
+}

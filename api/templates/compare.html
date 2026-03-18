@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}Srovnání — {{ profile.label }} · Token Hunter{% endblock %}
+{% block nav_compare %}nav-link-active{% endblock %}
+
+{% block content %}
+
+{# ── Header ── #}
+<div class="mb-8">
+  <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+    <a href="/" class="hover:text-gray-300">Radar</a>
+    <span>/</span>
+    <span class="text-gray-300">Srovnání</span>
+  </div>
+  <h1 class="text-2xl font-bold text-white mb-1">Srovnání modelů</h1>
+  <p class="text-gray-400 text-sm">{{ total_models }} modelů · vybráno pro: <span class="text-white">{{ profile.label }}</span></p>
+  {% if no_data_message %}
+  <p class="text-amber-400 text-sm mt-2">{{ no_data_message }}</p>
+  {% endif %}
+</div>
+
+{# ── Use-case selector ── #}
+<form method="get" action="/compare" class="mb-8">
+  <div class="flex flex-wrap gap-2">
+    {% for key, p in use_case_profiles.items() %}
+    <button type="submit" name="use_case" value="{{ key }}"
+            title="{% if key == 'api_free' %}Free API (limited / credits){% else %}{{ p.description }}{% endif %}"
+            class="tab-btn px-4 py-2 rounded-full text-sm border transition-colors
+                   {% if key == use_case %}
+                     tab-btn-active text-emerald-100
+                   {% else %}
+                     text-gray-300 hover:border-emerald-700 hover:text-emerald-300
+                   {% endif %}">
+      {{ p.label }}
+    </button>
+    {% endfor %}
+  </div>
+</form>
+
+{# ── Results ── #}
+{% if results %}
+
+{# Winner card #}
+{% set winner = best or results[0] %}
+<h3 class="text-sm font-medium text-gray-500 uppercase tracking-widest mb-3">Best API Option</h3>
+<div class="mb-6 rounded-2xl overflow-hidden winner-card surface-card">
+  <div class="bg-emerald-950/30 px-5 py-3 border-b border-emerald-900/40 flex items-center gap-2">
+    <span class="text-emerald-400 font-bold text-xs uppercase tracking-widest"># 1 Doporučení</span>
+    {% if winner.savings_label %}
+    <span class="ml-auto text-emerald-400 font-mono text-sm font-bold">{{ winner.savings_label }}</span>
+    {% endif %}
+  </div>
+  <div class="px-5 py-5">
+    <div class="flex items-start justify-between gap-4 mb-3">
+      <div>
+        <h2 class="text-xl font-bold text-white mb-1">{{ winner.model.name }}</h2>
+        <p class="text-sm text-gray-300">🔌 {{ winner.model.provider_name }}</p>
+      </div>
+      {% if winner.model.is_free %}
+      <span class="badge-limited text-sm font-bold px-3 py-1 rounded-full">🎁 FREE</span>
+      {% else %}
+      <div class="text-right">
+        <p class="font-mono text-white font-semibold">
+          {{ winner.model.pricing.input_per_1m | fmt_price }} / {{ winner.model.pricing.output_per_1m | fmt_price }}
+        </p>
+        <p class="text-xs text-gray-500">za 1M tokenů (in / out)</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <p class="text-sm text-emerald-300 mb-3 flex items-center gap-1.5">
+      <span>✓</span> {{ winner.why }}
+    </p>
+
+    {% if explanation %}
+    <p class="text-sm text-gray-400 mb-3">{{ explanation }}</p>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      {% for tag in winner.model.tags %}
+      <span class="tag tag-{{ tag.replace('-','_') }}">{{ tag }}</span>
+      {% endfor %}
+      {% if winner.model.context_length %}
+      <span class="tag">{{ winner.model.context_length | ctx_label }} ctx</span>
+      {% endif %}
+    </div>
+
+    {% if winner.caveats %}
+    <div class="mt-3 space-y-1">
+      {% for c in winner.caveats %}
+      <p class="text-xs text-amber-400 flex items-center gap-1.5">
+        <span>⚠</span> {{ c }}
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mt-4 flex gap-3">
+      <a href="/deal/{{ winner.model.id }}"
+         class="action-btn px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors shadow-lg">
+        Detail modelu
+      </a>
+      <a href="{{ winner.model.openrouter_url }}" target="_blank"
+         class="action-btn px-4 py-2 rounded-lg text-gray-200 text-sm transition-colors">
+        Otevřít na OpenRouter ↗
+      </a>
+    </div>
+  </div>
+</div>
+
+{# Alternatives #}
+{% if results | length > 1 %}
+<h3 class="text-sm font-medium text-gray-500 uppercase tracking-widest mb-3">Alternative API Routes</h3>
+<div class="space-y-3">
+  {% for card in alternatives or results[1:] %}
+  <a href="/deal/{{ card.model.id }}"
+     class="block rounded-xl px-5 py-4 card-hover surface-card">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs text-gray-600 font-mono">#{{ card.rank }}</span>
+          <h3 class="text-sm font-semibold text-white truncate">{{ card.model.name }}</h3>
+          <span class="text-xs text-gray-400">· 🔌 {{ card.model.provider_name }}</span>
+        </div>
+        <p class="text-xs text-gray-400 mb-2">{{ card.why }}</p>
+        <div class="flex flex-wrap gap-1">
+          {% for tag in card.model.tags[:3] %}
+          <span class="tag tag-{{ tag.replace('-','_') }}">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="text-right shrink-0">
+        {% if card.model.is_free %}
+        <span class="badge-limited text-xs font-bold px-2 py-0.5 rounded-full">🎁 FREE</span>
+        {% else %}
+        <p class="text-sm font-mono text-gray-300">
+          {{ card.model.pricing.input_per_1m | fmt_price }}<br>
+          {{ card.model.pricing.output_per_1m | fmt_price }}
+        </p>
+        {% if card.savings_label %}
+        <p class="text-xs text-emerald-400 font-mono mt-1">{{ card.savings_label }}</p>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% if card.caveats %}
+    <div class="mt-2 flex flex-wrap gap-x-3">
+      {% for c in card.caveats %}
+      <p class="text-xs text-amber-500 flex items-center gap-1"><span>⚠</span> {{ c }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if non_api_options %}
+<div class="mt-10">
+  <h3 class="text-sm font-medium text-gray-500 uppercase tracking-widest mb-3">Alternative (non-API)</h3>
+  <p class="text-xs text-gray-500 mb-3">These options are shown for access awareness only. They are excluded from winner selection because they are not directly comparable API routes.</p>
+  <div class="space-y-3">
+    {% for option in non_api_options %}
+    <div class="block rounded-xl surface-card px-5 py-4">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-semibold text-white truncate">{{ option.model_name }}</h3>
+            <span class="text-xs text-gray-500">· {{ option.access_type }}</span>
+          </div>
+          <p class="text-xs text-gray-400 mb-2">{{ option.access_description }}</p>
+          {% if option.not_included_reason %}
+          <p class="text-xs text-amber-400 mb-2">Not selected: {{ option.not_included_reason }}</p>
+          {% endif %}
+          {% if option.usage_limits %}
+          <p class="text-xs text-gray-500">Limits: {{ option.usage_limits }}</p>
+          {% endif %}
+          {% if option.notes %}
+          <p class="text-xs text-amber-400 mt-1">{{ option.notes }}</p>
+          {% endif %}
+        </div>
+        {% if option.source %}
+        <a href="{{ option.source }}" target="_blank" class="text-xs text-emerald-400 hover:text-emerald-300 shrink-0">
+          Source ↗
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="text-center py-16 text-gray-500">
+  <p class="text-lg mb-2">{{ no_data_message or "Žádné výsledky" }}</p>
+  <p class="text-sm">UI zobrazuje pouze ověřená pipeline data.</p>
+</div>
+{% endif %}
+
+{% endblock %}

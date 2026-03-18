@@ -1,0 +1,40 @@
+{
+  "captured_at": "2026-03-18T00:00:00",
+  "parser_version": "groq-pricing-snapshot-v1",
+  "items": [
+    {
+      "provider_id": "groq",
+      "model_name": "llama-3.3-70b-versatile",
+      "route_variant": "groq-official",
+      "route_kind": "official",
+      "route_label": "Groq API",
+      "access_type": "api",
+      "api_available": true,
+      "input_price": 0.0,
+      "output_price": 0.0,
+      "observed_input_price": 0.0,
+      "observed_output_price": 0.0,
+      "pricing_indirect": false,
+      "url": "https://console.groq.com/docs/models",
+      "title": "Groq Model Access",
+      "excerpt": "llama-3.3-70b-versatile available via Groq API free tier."
+    },
+    {
+      "provider_id": "groq",
+      "model_name": "llama-3.1-8b-instant",
+      "route_variant": "groq-official",
+      "route_kind": "official",
+      "route_label": "Groq API",
+      "access_type": "api",
+      "api_available": true,
+      "input_price": 0.0,
+      "output_price": 0.0,
+      "observed_input_price": 0.0,
+      "observed_output_price": 0.0,
+      "pricing_indirect": false,
+      "url": "https://console.groq.com/docs/models",
+      "title": "Groq Model Access",
+      "excerpt": "llama-3.1-8b-instant available via Groq API free tier."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "captured_at": "2026-03-18T00:00:00",
+  "parser_version": "openai-pricing-snapshot-v2",
+  "items": [
+    {"provider_id": "openai", "model_name": "GPT-4o Mini", "input_price": 0.15, "output_price": 0.6, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "GPT-4o mini pricing listed on the official API pricing page."},
+    {"provider_id": "openai", "model_name": "GPT-4.1 Mini", "input_price": 0.4, "output_price": 1.6, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "GPT-4.1 mini pricing listed on the official API pricing page."},
+    {"provider_id": "openai", "model_name": "GPT-4.1", "input_price": 2.0, "output_price": 8.0, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "GPT-4.1 pricing listed on the official API pricing page."},
+    {"provider_id": "openai", "model_name": "GPT-4o", "input_price": 2.5, "output_price": 10.0, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "GPT-4o pricing listed on the official API pricing page."},
+    {"provider_id": "openai", "model_name": "o3-mini", "input_price": 1.1, "output_price": 4.4, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "o3-mini pricing listed on the official API pricing page."},
+    {"provider_id": "openai", "model_name": "o4-mini", "input_price": 1.1, "output_price": 4.4, "url": "https://openai.com/api/pricing/", "title": "OpenAI API Pricing", "excerpt": "o4-mini pricing listed on the official API pricing page."}
+  ]
+}

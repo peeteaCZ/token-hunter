@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="cs" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Token Hunter{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: "#0d0d14",
+            card: "#13131e",
+            border: "#1e1e2e",
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(0,255,150,0.08), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(96,165,250,0.08), transparent 22%),
+        radial-gradient(circle at 50% 120%, rgba(255,255,255,0.035), transparent 36%),
+        linear-gradient(180deg, #090b12 0%, #0b0d14 45%, #0d0d14 100%);
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.035), transparent 32%),
+        linear-gradient(135deg, rgba(255,255,255,0.018), rgba(255,255,255,0));
+      opacity: 0.8;
+    }
+    main { animation: fadeIn .25s ease-out; }
+    .badge-free, .badge-best { background: linear-gradient(135deg,#10b981,#059669); color:#ecfdf5; box-shadow: 0 10px 25px rgba(16,185,129,0.18); }
+    .badge-provider, .badge-info { background: rgba(37,99,235,0.14); color:#bfdbfe; border:1px solid rgba(96,165,250,0.22); }
+    .badge-limited { background: rgba(245,158,11,0.14); color:#fde68a; border:1px solid rgba(251,191,36,0.22); }
+    .surface-card, .card-hover {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
+    }
+    .card-hover:hover, .surface-card:hover {
+      border-color: rgba(255,255,255,0.14) !important;
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.48);
+      background: rgba(255,255,255,0.045);
+    }
+    .winner-card {
+      background:
+        linear-gradient(135deg, rgba(0,255,150,0.05), rgba(0,0,0,0.2)),
+        rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 0 1px rgba(0,255,150,0.2), 0 8px 32px rgba(0,255,150,0.15);
+    }
+    .tag, .pill {
+      display:inline-block; padding:4px 10px; border-radius:9999px; font-size:0.7rem;
+      background: rgba(59,130,246,0.12); color:#dbeafe; border:1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .tag-code, .tag-trust_tier_1, .tag-best, .tag-official { background: rgba(16,185,129,0.14); color:#bbf7d0; border-color: rgba(16,185,129,0.22); }
+    .tag-free-variant, .tag-free_tier, .tag-promo, .tag-api_free, .tag-friction { background: rgba(245,158,11,0.14); color:#fde68a; border-color: rgba(251,191,36,0.22); }
+    .tag-vision, .tag-chat, .tag-available, .tag-multi_source, .tag-pricing_indirect, .tag-gateway, .tag-aggregator { background: rgba(59,130,246,0.12); color:#bfdbfe; border-color: rgba(96,165,250,0.18); }
+    .tag-reasoning { background: rgba(30,41,59,0.95); color:#c4b5fd; border-color:#4c1d95; }
+    .tag-fast { background: rgba(245,158,11,0.14); color:#fde68a; border-color: rgba(251,191,36,0.22); }
+    .rank-1 { color:#fbbf24; }
+    .rank-2 { color:#94a3b8; }
+    .rank-3 { color:#b45309; }
+    .nav-link, .action-btn, .tab-btn {
+      transition: transform .15s ease, background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+    }
+    .nav-link, .tab-btn {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-link:hover, .action-btn:hover, .tab-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+    .nav-link:hover, .tab-btn:hover {
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+    }
+    .action-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .action-btn:hover {
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 10px 30px rgba(16,185,129,0.16);
+    }
+    .nav-link-active, .tab-btn-active {
+      color: #ffffff !important;
+      background: rgba(255,255,255,0.10) !important;
+      border-color: rgba(16,185,129,0.35) !important;
+      box-shadow: 0 0 0 1px rgba(16,185,129,0.16), 0 8px 28px rgba(16,185,129,0.16);
+    }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform: translateY(0); } }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#0d0d14; }
+    ::-webkit-scrollbar-thumb { background:#2a2a3a; border-radius:3px; }
+  </style>
+</head>
+<body class="text-gray-200 min-h-screen flex flex-col">
+
+  <!-- ── Navigation ── -->
+  <nav class="border-b border-white/10 sticky top-0 z-50" style="background:rgba(11,13,20,0.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 text-emerald-400 font-bold text-lg tracking-tight hover:text-emerald-300">
+        <span class="text-xl">🔍</span>
+        <span>Token Hunter</span>
+      </a>
+      <div class="flex items-center gap-1 text-sm">
+        <a href="/" class="nav-link px-3 py-1.5 rounded-full text-gray-300 hover:text-white transition-colors
+          {% block nav_radar %}{% endblock %}">Radar</a>
+        <a href="/compare" class="nav-link px-3 py-1.5 rounded-full text-gray-300 hover:text-white transition-colors
+          {% block nav_compare %}{% endblock %}">Srovnat</a>
+        <a href="/compare?use_case=api_free" title="Free API (limited / credits)"
+           class="nav-link px-3 py-1.5 rounded-full text-gray-300 hover:text-white transition-colors {% if request.url.path == '/compare' and request.query_params.get('use_case') == 'api_free' %}nav-link-active{% endif %}">
+          🎁 Free API
+        </a>
+        <a href="/ask" class="nav-link px-3 py-1.5 rounded-full text-gray-300 hover:text-white transition-colors
+          {% block nav_ask %}{% endblock %}">
+          <span class="text-orange-400">✦</span> Zeptat se AI
+        </a>
+        <a href="/api/v1/radar" target="_blank"
+           class="nav-link px-3 py-1.5 rounded-full text-gray-400 hover:text-gray-200 transition-colors text-xs">API</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="border-t border-[#1e1e2e] py-5 mt-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600">
+      <span>Token Hunter · Data: <a href="https://openrouter.ai" class="hover:text-gray-400" target="_blank">OpenRouter API</a></span>
+      <span>
+        {% if last_fetched %}
+          Aktualizováno {{ last_fetched.strftime('%d.%m.%Y %H:%M') }} UTC
+        {% else %}
+          Načítám data…
+        {% endif %}
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Zeptat se AI · Token Hunter{% endblock %}
+{% block nav_ask %}nav-link-active{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+  <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+    <a href="/" class="hover:text-gray-300">Radar</a>
+    <span>/</span>
+    <span class="text-gray-300">Zeptat se AI</span>
+  </div>
+  <h1 class="text-2xl font-bold text-white mb-1">AI poradce</h1>
+  <p class="text-gray-400 text-sm">
+    Powered by <span class="text-orange-400 font-medium">Groq</span>
+    · model llama-3.3-70b-versatile
+    · data z aktuálního radaru ({{ total_models }} modelů)
+  </p>
+  {% if no_data_message %}
+  <p class="text-amber-400 text-sm mt-2">{{ no_data_message }}</p>
+  {% endif %}
+</div>
+
+{# ── Question form ── #}
+<div class="border border-[#1e1e2e] rounded-2xl bg-[#13131e] p-6 mb-6">
+  <form method="post" action="/ask">
+    <label class="block text-xs text-gray-500 uppercase tracking-widest mb-2">Tvůj dotaz</label>
+    <textarea
+      name="question"
+      rows="3"
+      placeholder="Jaký model je nejlepší na coding do $20/měsíc? Nebo: Jaká je nejlevnější free možnost pro experimenty?"
+      class="w-full bg-[#0d0d14] border border-[#2a2a3a] rounded-xl px-4 py-3 text-sm text-gray-200
+             placeholder-gray-600 focus:outline-none focus:border-emerald-600 resize-none"
+    >{{ question }}</textarea>
+    <div class="flex items-center justify-between mt-3">
+      <p class="text-xs text-gray-600">Odpovědi vycházejí pouze z dat na radaru. AI nevymýšlí ceny.</p>
+      <button type="submit"
+              class="px-5 py-2 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold
+                     rounded-lg transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3M6.343 6.343l-.707-.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Zeptat se
+      </button>
+    </div>
+  </form>
+</div>
+
+{# ── Answer ── #}
+{% if answer is not none %}
+<div class="border border-orange-700/40 rounded-2xl bg-[#13131e] overflow-hidden mb-8">
+  <div class="bg-orange-950/30 px-5 py-3 border-b border-orange-900/40 flex items-center gap-2">
+    <span class="text-orange-400 text-xs font-bold uppercase tracking-widest">Odpověď AI poradce</span>
+    <span class="ml-auto text-xs text-gray-600">Groq · llama-3.3-70b</span>
+  </div>
+  <div class="px-5 py-5">
+    <div class="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">{{ answer }}</div>
+  </div>
+  <div class="px-5 pb-4 border-t border-[#1e1e2e] pt-3 flex gap-3">
+    <a href="/compare" class="text-xs text-emerald-500 hover:text-emerald-400">
+      Porovnat modely →
+    </a>
+    <a href="/" class="text-xs text-gray-500 hover:text-gray-300">
+      ← Zpět na radar
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{# ── Example questions ── #}
+<div>
+  <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">Příklady dotazů</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    {% set examples = [
+      "Jaký model je nejlepší na coding do $10 měsíčně?",
+      "Jaká je nejlevnější free možnost pro experimenty?",
+      "Porovnej DeepSeek a GPT-4o mini pro každodenní chat.",
+      "Který model má nejdelší kontextové okno zdarma?",
+      "Chci ušetřit na LLM volání — kde začít?",
+      "Jaký je nejlepší model na summarizaci dlouhých dokumentů?",
+    ] %}
+    {% for ex in examples %}
+    <form method="post" action="/ask">
+      <input type="hidden" name="question" value="{{ ex }}" />
+      <button type="submit"
+              class="w-full text-left px-4 py-3 rounded-xl border border-[#1e1e2e] bg-[#0d0d14]
+                     text-sm text-gray-400 hover:border-orange-700/60 hover:text-gray-200 transition-colors">
+        {{ ex }}
+      </button>
+    </form>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
